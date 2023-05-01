@@ -16,7 +16,9 @@ To run the script, you require:
     * `pip3 install slack_bolt paper-qa==1.2`
     * NB: At the time of writing the default pip version of paper-qa and its langchain dependency are out of sync, hence requesting version 1.2.
   * An OpenAI [API key](https://help.openai.com/en/articles/4936850-where-do-i-find-my-secret-api-key).
-  * You can [Create a new Slack app](https://api.slack.com/tutorials/tracks/responding-to-app-mentions) that is preconfigured with the neccessary permissions by pressing the green 'Create App' button on that link. You will need to copy the App and Bot Tokens to set as environment variables, as described below.
+  * You can [Create a new Slack app](https://api.slack.com/tutorials/tracks/responding-to-app-mentions) that is preconfigured with the neccessary permissions by pressing the green 'Create App' button on that link.
+    * You can change the name of your app/bot (you'll use this to interact with it on Slack, by editing the 'manifest' file when the option is presented.
+    * You will need to copy the App and Bot Tokens to set as environment variables, as described below.
 
 The three API tokens you have generated should be exported to your shell environment at runtime:
 
