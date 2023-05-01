@@ -4,7 +4,7 @@ This script reads all of the PDFs in a directory, and uses a Large Language Mode
 
 The script is trivial.. it just stands on the shoulders of giants such as [PaperQA](https://github.com/whitead/paper-qa/), [OpenAI Embeddings](https://platform.openai.com/docs/guides/embeddings), [FAISS](https://github.com/facebookresearch/faiss), [langchain](https://github.com/hwchase17/langchain), and [Slack Bolt](https://slack.dev/bolt-python/concepts).
 
-Why the name? When your Principal Investigator goes on holidays, you need a *Virtual PI*!
+Why the name? When your Principal Investigator goes on holidays, you need a *Virtual PI* to answer your difficult questions!
 
 ## Configuration
 
