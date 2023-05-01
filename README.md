@@ -14,15 +14,17 @@ To run the script, you require:
     * `pip3 install slack_bolt paper-qa==1.2`
     * NB: At the time of writing the default pip version of paper-qa and its langchain dependency are out of sync, hence requesting version 1.2.
   * An OpenAI [API key](https://help.openai.com/en/articles/4936850-where-do-i-find-my-secret-api-key).
-  * You'll need to [create a new Slack app](https://api.slack.com/authentication/basics) to generate the API keys needed for Slack. This just takes a few mouse clicks:
+  * You'll need to [create a new Slack app](https://api.slack.com/authentication/basics) to generate the API keys needed for Slack:
     * Click 'Create New App'.
     * Select 'From Scratch'.
     * Assign a name and select the Slack workspace you will use the app with.
     * Select the 'Enable Socket Mode' option and enable this feature via the permissions slider.
-    * It only needs the 'connections:write' permissions scope, then you can 'Generate' the token.
+    * It only needs the 'connections:write' and 'app_mentions:read' permission scopes, then you can 'Generate' the token.   
     * Save this token - you'll need it in the environment at runtime.
-    * Then you need a 'bot Token' with scope to read and write messages - click on the 'OAuth & Permissions' button on the left of the Slack app website.
-    * Under 'Bot Token Scopes' add `chat::write` and `app_mentions:read`.
+    * NB: You'll also need to go to the 'Event Subscriptions' page and enable events using the permissions slider.
+    * Under 'Subscribe to Bot Events' heading add the 'app_mention' permission.
+    * Then you need a 'Bot Token' with scope to read and write messages - click on the 'OAuth & Permissions' button on the left of the Slack app website.
+    * Under 'Bot Token Scopes' add `chat::write` and `app_mention` permission.
     * Then at the top of the page select the green 'Install to Workspace' button.
     * After you approve the installation, you will be given a 'Bot User OAuth Token', which you will also need in the environment at runtime.
 
