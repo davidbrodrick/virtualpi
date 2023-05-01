@@ -73,7 +73,10 @@ except:
     docs = Docs(llm='gpt-3.5-turbo', summary_llm="davinci")
     for p in papers:
         print("Embedding %s .."%p)
-        docs.add(p, citation=p, key=p)
+        try:
+            docs.add(p, citation=p, key=p)
+        except Exception as e:
+            print("Error processing %s: %s"%(p,e))
     try:
         with open("%s/docs.pkl"%PAPERDIR, "wb") as f:
             #Save this state for next time
