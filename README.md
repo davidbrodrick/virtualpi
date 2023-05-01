@@ -30,6 +30,8 @@ Then you can start the app as follows.
 
 `python3 virtualpi.py /path/to/your/PDF/directory/`
 
+After you run it the first time (when it embeds all of the documents), the script will exit and ask you to restart it (to avoid what appears to be a timeout issue in the Slack libraries).
+
 ## Saving State
 
 When the script starts it will check if a pickled version of the dense vector containing the documents is already available in the PDF directory. If found it will use that existing state (which saves time and the cost of API calls), otherwise it will parse the PDFs, embed them into the FAISS dense vector and then save this state for next time.
