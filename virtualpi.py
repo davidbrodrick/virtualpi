@@ -1,10 +1,13 @@
 #!/usr/bin/python3
-
+#
 #NB: The following environment variables need to be set:
 # export OPENAI_API_KEY="sk-M...M"
 # export SLACK_APP_TOKEN="xapp-1...d"
 # export SLACK_BOT_TOKEN="xoxb-2...C"
-#See the README for more information: 
+#See the README for more information:
+#https://github.com/davidbrodrick/virtualpi/blob/main/README.md
+#
+#David Brodrick, 2023
 
 import sys, os, pickle, glob
 from paperqa import Docs
