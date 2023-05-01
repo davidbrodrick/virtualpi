@@ -4,7 +4,7 @@ This script reads all of the PDFs in a directory, and uses a Large Language Mode
 
 The script is trivial.. it just stands on the shoulders of giants such as [PaperQA](https://github.com/whitead/paper-qa/), [OpenAI Embeddings](https://platform.openai.com/docs/guides/embeddings), [FAISS](https://github.com/facebookresearch/faiss), [langchain](https://github.com/hwchase17/langchain), and [Slack Bolt](https://slack.dev/bolt-python/concepts).
 
-Why the name? When your Principal Investigator goes on holidays, you need a *Virtual PI* to answer your difficult questions!
+Why the name? When your Principal Investigator goes on holidays, you need a *Virtual PI* to answer the difficult questions!
 
 This work was first inspired by a conversation with the authors of [Galactic ChitChat: Using Large Language Models to Converse with Astronomy Literature](https://arxiv.org/abs/2304.05406). The tool was first implemented and used for querying documentation for an astronomical instrument, [MAVIS](https://mavis-ao.org/).
 
@@ -45,7 +45,7 @@ By now your app should be happily running. The final step is to actually add it 
   * In Slack, Click the '... More' on the top left.
   * Select 'Apps'.
   * Select the new app you created above.
-  * Then go to a Slack channel and tag the app with a question e.g. `@WhatYouCalledYourApp what is the meaning of this?`
+  * Then go to a Slack channel and tag the app with a question e.g. `@WhateverYouCalledYourApp what is the meaning of this?`
 
 An example interaction is shown below:
 ![alt text](images/MAVIS-IMBH.png "Example Slack interaction")
