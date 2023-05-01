@@ -14,7 +14,7 @@ from paperqa import Docs
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 
-#Create Slack app handle
+#Create handle to Slack
 app = App(token=os.environ["SLACK_BOT_TOKEN"])
 
 ############################################################
@@ -69,21 +69,35 @@ except:
 
     print("Found %d PDFs in %s"%(len(papers),PAPERDIR))
 
-    #Add each paper in turn to paper-qa/FAISS     
+    #Add each paper in turn to paper-qa/FAISS/OpenAI embedding     
     docs = Docs(llm='gpt-3.5-turbo', summary_llm="davinci")
     for p in papers:
-        print("Embedding %s .."%p)
         try:
-            docs.add(p, citation=p, key=p)
+            #Get the base file name to use as the citation
+            citation=os.path.split(p)[-1]
+            #Strip off the ".pdf" or ".PDF"
+            citation=citation[0:citation.rfind(".")]
+            #Embed this doc
+            print("Embedding %s"%citation)
+            docs.add(p, citation=citation, key=citation)
         except Exception as e:
             print("Error processing %s: %s"%(p,e))
     try:
         with open("%s/docs.pkl"%PAPERDIR, "wb") as f:
             #Save this state for next time
+            print("\nSaving state to file %s/docs.pkl - this may take some time."%PAPERDIR)
             pickle.dump(docs, f)
-    except:
-        Print("Couldn't save state into %s - is it writeable?"%PAPERDIR)
+    except Exception as e:
+        print("Couldn't save state into %s - is it writeable?"%PAPERDIR)
+        print("Error was: %s"%e)
+        sys.exit(1)
+    finally:
+        #This is only necessary as the Slack handle created above seems to break
+        #during the long delay of embedding and pickling. Some kind of bug?
+        print("State saved okay - please restart program.")
+        sys.exit(1)
 
 #Set up the Slack interface to start servicing requests
 print("Starting Slack handler - bot is ready to answer your questions!")
 SocketModeHandler(app, os.environ["SLACK_APP_TOKEN"]).start()
+
