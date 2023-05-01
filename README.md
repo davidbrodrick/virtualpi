@@ -6,7 +6,7 @@ The script is trivial.. it just stands on the shoulders of giants such as [Paper
 
 Why the name? When your Principal Investigator goes on holidays, you need a *Virtual PI* to answer your difficult questions!
 
-This work was first inspired by a conversation with the authors of [Galactic ChitChat: Using Large Language Models to Converse with Astronomy Literature](https://arxiv.org/abs/2304.05406).
+This work was first inspired by a conversation with the authors of [Galactic ChitChat: Using Large Language Models to Converse with Astronomy Literature](https://arxiv.org/abs/2304.05406). The tool was first used for querying documentation for an astronomical instrument, [MAVIS](https://mavis-ao.org/).
 
 ## Configuration
 
@@ -46,3 +46,6 @@ By now your app should be happily running. The final step is to actually add it 
   * Select 'Apps'.
   * Select the new app you created above.
   * Then go to a Slack channel and tag the app with a question e.g. `@WhatYouCalledYourApp what is the meaning of this?`
+
+An example interaction is shown below:
+![alt text](images/MAVIS-IMBH.png "Example Slack interaction")
