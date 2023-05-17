@@ -51,5 +51,7 @@ By now your app should be happily running. The final step is to actually add it 
   * Select the new app you created above.
   * Then go to a Slack channel and tag the app with a question e.g. `@WhateverYouCalledYourApp what is the meaning of this?`
 
+**NB: The app will only respond to mentions in a Slack channel, not to DMs.**
+
 An example interaction is shown below:
 ![alt text](images/MAVIS-IMBH.png "Example Slack interaction")
