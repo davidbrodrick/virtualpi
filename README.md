@@ -13,8 +13,7 @@ This work was first inspired by a conversation with the authors of [Galactic Chi
 To run the script, you require:
   * A directory with the PDFs you wish the expert system to ingest;
   * A working Python3 environment with the following packages available:
-    * `pip3 install slack_bolt paper-qa==1.2`
-    * NB: At the time of writing the default pip version of paper-qa and its langchain dependency are out of sync, hence requesting version 1.2.
+    * `pip3 install -r requirements.txt`
   * An OpenAI [API key](https://help.openai.com/en/articles/4936850-where-do-i-find-my-secret-api-key).
   * You can [Create a new Slack app](https://api.slack.com/tutorials/tracks/responding-to-app-mentions) that is preconfigured with the neccessary permissions by pressing the green 'Create App' button on that link.
     * You can change the name of your app/bot (you'll use this to interact with it on Slack, by editing the 'manifest' file when the option is presented.
@@ -30,7 +29,14 @@ export SLACK_BOT_TOKEN="xoxb-2...C"
 
 Then you can start the app as follows.
 
-`python3 virtualpi.py /path/to/your/PDF/directory/`
+```bash
+python3 virtualpi.py /path/to/your/PDF/directory/
+```
+
+or if using [just](https://github.com/casey/just), and with pdfs in `./pdfs/`:
+```bash
+just run
+```
 
 After you run it the first time (when it embeds all of the documents), the script will exit and ask you to restart it (to avoid what appears to be a timeout issue in the Slack libraries).
 
@@ -40,7 +46,13 @@ When the script starts it will check if a pickled version of the dense vector co
 
 NB: If you add/remove PDFs you will need to remove the state file!
 
-`rm /path/to/your/PDF/directory/docs.pkl`
+```bash
+rm /path/to/your/PDF/directory/docs.pkl
+```
+or
+```bash
+just reset
+```
 
 ## Add to Slack Workspace
 
