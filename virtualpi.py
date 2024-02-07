@@ -98,11 +98,6 @@ if docs is None:
         print("Couldn't save state into %s - is it writeable?"%PAPERDIR)
         print("Error was: %s"%e)
         sys.exit(2)
-    finally:
-        #This is only necessary as the Slack handle created above seems to break
-        #during the long delay of embedding and pickling. Some kind of bug?
-        print("State saved okay - please restart program.")
-        sys.exit(0)
 
 #Set up the Slack interface to start servicing requests
 print("Starting Slack handler - bot is ready to answer your questions!")

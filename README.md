@@ -9,9 +9,17 @@ Why the name? When your Principal Investigator goes on holidays, you need a *Vir
 This work was first inspired by a conversation with the authors of [Galactic ChitChat: Using Large Language Models to Converse with Astronomy Literature](https://arxiv.org/abs/2304.05406), who implemented a similar tool, using a similar software stack. Virtual PI was first implemented and used for querying documentation for an astronomical instrument, [MAVIS](https://mavis-ao.org/).
 
 ## Configuration
+#### API keys
+```bash
+# create your .env file:
+cp .env-example .env 
+# set your environment variables:
+vim .env
+```
+#### Launching the bot
 
 To run the script, you require:
-  * A directory with the PDFs you wish the expert system to ingest;
+  * A directory with the PDFs you wish the expert system to ingest (e.g., `./pdfs/*.pdfs`)
   * A working Python3 environment with the following packages available:
     * `pip3 install -r requirements.txt`
   * An OpenAI [API key](https://help.openai.com/en/articles/4936850-where-do-i-find-my-secret-api-key).
@@ -21,11 +29,12 @@ To run the script, you require:
 
 The three API tokens you have generated should be exported to your shell environment at runtime:
 
-```
+```bash
 export OPENAI_API_KEY="sk-M...M"
 export SLACK_APP_TOKEN="xapp-1...d"
 export SLACK_BOT_TOKEN="xoxb-2...C"
 ```
+e.g., by `source`ing the `.env` file after modifying it.
 
 Then you can start the app as follows.
 
@@ -33,12 +42,35 @@ Then you can start the app as follows.
 python3 virtualpi.py /path/to/your/PDF/directory/
 ```
 
-or if using [just](https://github.com/casey/just), and with pdfs in `./pdfs/`:
+#### Recording Reactions
+In some cases, you may wish to gather the reactions to bot messages (e.g., for further optimisation of the bot) by scanning a channel.
+Assuming the `.env` is setup correctly, you can save this data to disk `bot_messages.json` using by running the `scan_messages.py` script:
+```bash
+python scan_messages.py
+```
+
+To get the bot's user id (required in `.env`), find the bot's profile on your slack channel, and copy the id shown (starting with `U...`), e.g.:
+
+<img src="images/vpiuid.png" style="width:500px;display:block;margin-left:auto;margin-right:auto"/>
+
+
+### Using [just](https://github.com/casey/just):
+`just` allows the abstraction of a few of these setup tasks, see the full set of tasks in the `.justfile`.
+
+After setting API keys (as above), you can create a virtual environment, install dependencies, and create a `./pdfs/` directory, by running:
+```bash
+just setup
+```
+
+Then (after adding your PDFs to `./pdfs/` you can start the slackbot using:
 ```bash
 just run
 ```
 
-After you run it the first time (when it embeds all of the documents), the script will exit and ask you to restart it (to avoid what appears to be a timeout issue in the Slack libraries).
+To record the reactions by scanning a slack channel, set the appropriate `.env` variables and run:
+```bash
+just scan
+```
 
 ## Saving State
 
@@ -51,7 +83,7 @@ rm /path/to/your/PDF/directory/docs.pkl
 ```
 or
 ```bash
-just reset
+just clean
 ```
 
 ## Add to Slack Workspace
@@ -67,3 +99,4 @@ By now your app should be happily running. The final step is to actually add it 
 
 An example interaction is shown below:
 ![alt text](images/MAVIS-IMBH.png "Example Slack interaction")
+
