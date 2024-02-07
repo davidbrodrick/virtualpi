@@ -14,6 +14,7 @@ from paperqa import Docs
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
 from openai import AsyncOpenAI
+from tqdm import tqdm
 chat = AsyncOpenAI()
 
 #Create handle to Slack
@@ -32,11 +33,10 @@ def event_test(say, body):
             answer = docs.query(user_question, k=30, max_sources=10)
             #Print some stuff locally
             print(answer.formatted_answer)
-            #for context in answer.contexts:
-            #    print("* %s: %s\n"%(context.text.name, context.text.text))
             print("\n\n\n")
-            #Send the answer to Slack
-            say(answer.formatted_answer)
+            #Send the (minimal) answer to Slack
+            formatted_minimal = f"Question: {answer.question}\n\n{answer.answer}"
+            say(formatted_minimal)
     except Exception as e:
         print("Error: %s"%e)
 
@@ -78,14 +78,14 @@ if docs is None:
 
     #Add each paper in turn to paper-qa/FAISS/OpenAI embedding     
     docs = Docs(llm="gpt-3.5-turbo",client=chat)
-    for p in papers:
+    print("Embedding documents")
+    pbar = tqdm(papers,leave=True,desc="")
+    for p in pbar:
         try:
             #Get the base file name to use as the citation
             citation=os.path.split(p)[-1]
-            #Strip off the ".pdf" or ".PDF"
-            citation=citation[0:citation.rfind(".")]
             #Embed this doc
-            print("Embedding %s"%citation)
+            pbar.set_description(f"doc={citation:s}")
             docs.add(p)
         except Exception as e:
             print("Error processing %s: %s"%(p,e))
