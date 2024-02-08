@@ -13,6 +13,9 @@ import sys, os, pickle, glob
 from paperqa import Docs
 from slack_bolt import App
 from slack_bolt.adapter.socket_mode import SocketModeHandler
+from openai import AsyncOpenAI
+from tqdm import tqdm
+chat = AsyncOpenAI()
 
 #Create handle to Slack
 app = App(token=os.environ["SLACK_BOT_TOKEN"])
@@ -21,6 +24,7 @@ app = App(token=os.environ["SLACK_BOT_TOKEN"])
 #This function is called when a Slack user mentions the bot
 @app.event("app_mention")
 def event_test(say, body):
+    print("received question, working on answer.")
     try:
         #This gets the question text from the user
         user_question=body["event"]["blocks"][0]["elements"][0]["elements"][1]["text"]
@@ -29,11 +33,9 @@ def event_test(say, body):
             answer = docs.query(user_question, k=30, max_sources=10)
             #Print some stuff locally
             print(answer.formatted_answer)
-            for p in answer.passages:
-                print("* %s: %s\n"%(p, answer.passages[p]))
             print("\n\n\n")
-            #Send the answer to Slack
-            say(answer.formatted_answer)
+            #Send the (minimal) answer to Slack
+            say(answer.answer)
     except Exception as e:
         print("Error: %s"%e)
 
@@ -52,10 +54,14 @@ if not os.path.exists(PAPERDIR):
 try:
     #Load the pre-pickled document vector if it exists
     with open("%s/docs.pkl"%PAPERDIR, "rb") as f:
-        docs = pickle.load(f)
+        docs = pickle.loads(pickle.load(f))
+    docs.set_client(chat)
     print("Loaded previous state from %s/docs.pkl"%PAPERDIR)
     print(" - remove this file if you change the set of PDFs\n")
-except:
+except FileNotFoundError:
+    docs = None
+
+if docs is None:
     #Couldn't load a pre-picked version
     papers=[]
     filesfound=glob.glob("%s/*"%PAPERDIR)
@@ -70,34 +76,42 @@ except:
     print("Found %d PDFs in %s"%(len(papers),PAPERDIR))
 
     #Add each paper in turn to paper-qa/FAISS/OpenAI embedding     
-    docs = Docs(llm='gpt-3.5-turbo', summary_llm="davinci")
-    for p in papers:
+    docs = Docs(llm="gpt-3.5-turbo",client=chat)
+    print("Embedding documents")
+    pbar = tqdm(papers,leave=True,desc="")
+    for p in pbar:
         try:
             #Get the base file name to use as the citation
             citation=os.path.split(p)[-1]
-            #Strip off the ".pdf" or ".PDF"
             citation=citation[0:citation.rfind(".")]
             #Embed this doc
-            print("Embedding %s"%citation)
-            docs.add(p, citation=citation, key=citation)
+            pbar.set_description(f"doc={citation:s}")
+            docs.add(p,docname=citation,citation=citation)
         except Exception as e:
             print("Error processing %s: %s"%(p,e))
     try:
         with open("%s/docs.pkl"%PAPERDIR, "wb") as f:
             #Save this state for next time
             print("\nSaving state to file %s/docs.pkl - this may take some time."%PAPERDIR)
-            pickle.dump(docs, f)
+            pickle.dump(pickle.dumps(docs), f)
     except Exception as e:
         print("Couldn't save state into %s - is it writeable?"%PAPERDIR)
         print("Error was: %s"%e)
-        sys.exit(1)
-    finally:
-        #This is only necessary as the Slack handle created above seems to break
-        #during the long delay of embedding and pickling. Some kind of bug?
-        print("State saved okay - please restart program.")
-        sys.exit(1)
+        sys.exit(2)
+
+docs.prompts.qa = ("Write an answer ({answer_length}) "
+    "for the question below based on the provided context. "
+    "If the context provides insufficient information, "
+    'reply "I cannot answer". '
+    "For each part of your answer, indicate which sources most support it "
+    "via valid citation markers at the end of sentences, like (Example2012). "
+    "Answer in an unbiased, comprehensive, and scholarly tone. "
+    "If the question is subjective, provide an opinionated answer in the concluding 1-2 sentences. "
+    "Use Markdown for formatting code or text, and try to use direct quotes to support arguments.\n\n"
+    "{context}\n"
+    "Question: {question}\n"
+    "Answer: ")
 
 #Set up the Slack interface to start servicing requests
 print("Starting Slack handler - bot is ready to answer your questions!")
 SocketModeHandler(app, os.environ["SLACK_APP_TOKEN"]).start()
-
