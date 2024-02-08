@@ -35,8 +35,7 @@ def event_test(say, body):
             print(answer.formatted_answer)
             print("\n\n\n")
             #Send the (minimal) answer to Slack
-            formatted_minimal = f"Question: {answer.question}\n\n{answer.answer}"
-            say(formatted_minimal)
+            say(answer.answer)
     except Exception as e:
         print("Error: %s"%e)
 
@@ -84,9 +83,10 @@ if docs is None:
         try:
             #Get the base file name to use as the citation
             citation=os.path.split(p)[-1]
+            citation=citation[0:citation.rfind(".")]
             #Embed this doc
             pbar.set_description(f"doc={citation:s}")
-            docs.add(p)
+            docs.add(p,docname=citation,citation=citation)
         except Exception as e:
             print("Error processing %s: %s"%(p,e))
     try:
@@ -99,7 +99,19 @@ if docs is None:
         print("Error was: %s"%e)
         sys.exit(2)
 
+docs.prompts.qa = ("Write an answer ({answer_length}) "
+    "for the question below based on the provided context. "
+    "If the context provides insufficient information, "
+    'reply "I cannot answer". '
+    "For each part of your answer, indicate which sources most support it "
+    "via valid citation markers at the end of sentences, like (Example2012). "
+    "Answer in an unbiased, comprehensive, and scholarly tone. "
+    "If the question is subjective, provide an opinionated answer in the concluding 1-2 sentences. "
+    "Use Markdown for formatting code or text, and try to use direct quotes to support arguments.\n\n"
+    "{context}\n"
+    "Question: {question}\n"
+    "Answer: ")
+
 #Set up the Slack interface to start servicing requests
 print("Starting Slack handler - bot is ready to answer your questions!")
 SocketModeHandler(app, os.environ["SLACK_APP_TOKEN"]).start()
-

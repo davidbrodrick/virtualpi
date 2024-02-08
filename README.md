@@ -100,3 +100,12 @@ By now your app should be happily running. The final step is to actually add it 
 An example interaction is shown below:
 ![alt text](images/MAVIS-IMBH.png "Example Slack interaction")
 
+#### Docker
+Running with Docker is probably the easiest all round solution, but can make debugging a bit more tedious. To run with docker, use:
+```bash
+docker build -t virtualpi:latest
+docker run --restart=unless-stopped -d -v ./pdfs:/app/pdfs --env-file=./.env virtualpi
+```
+This has the benefit of allowing multiple bots running on varied pdf sources. You can build the image once, then spin up a new container (changing the `./pdfs` directory and probably `.env`.
+
+Note that for now, the `.env` format is not compatible between `just run` and `docker run`. For Docker, remove the `export` and quotation marks from the `.env` file. TODO: fix this.
