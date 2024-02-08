@@ -100,7 +100,7 @@ By now your app should be happily running. The final step is to actually add it 
 An example interaction is shown below:
 ![alt text](images/MAVIS-IMBH.png "Example Slack interaction")
 
-#### Docker
+## Docker
 Running with Docker is probably the easiest all round solution, but can make debugging a bit more tedious. To run with docker, use:
 ```bash
 docker build -t virtualpi:latest
